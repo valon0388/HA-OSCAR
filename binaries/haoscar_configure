@@ -36,24 +36,15 @@ import halib.Exit as exit
 def main():
    #We get options
    try:
-      opts, args = getopt.getopt(sys.argv[1:], 'hm:',["mode="])
+      opts, args = getopt.getopt(sys.argv[1:], 'hm:')
    except getopt.GetoptError,err:
       usage()
       sys.exit(2)
-
-   mode = None
    
    for o, a in opts:
       if o == "-h":
          usage()
          sys.exit()
-      elif o in ("-m", "--mode"):
-         mode = a
-   
-   if (mode not in ("primary","secondary")):
-      print "unrecognized option"
-      usage()
-      sys.exit(2)
 
    #We can now start the installation
    logger.initialize()
@@ -73,61 +64,57 @@ def main():
    env.configureEnvironment()
 
    #SETUP INFORMATION FOR PRIMARY SERVER
-   if(mode == "primary"):
-      logger.section("PRIMARY SERVER")
-      #Next, we generate system configuration facts to be stored in DB
-      logger.section("Gathering System Config Info")
-      sys_config = dict()
-      sys_config = chaif.primaryConfigurator()
+   logger.section("PRIMARY SERVER")
+   #Next, we generate system configuration facts to be stored in DB
+   logger.section("Gathering System Config Info")
+   sys_config = dict()
+   sys_config = chaif.primaryConfigurator()
 
-      #Time to setup our databases and populate it.
-      logger.section("Database Initialization")
-      chaif.databaseSetup()
+   #Time to setup our databases and populate it.
+   logger.section("Database Initialization")
+   chaif.databaseSetup()
 
-      logger.subsection("populating database with primary config data")
-      configdata = ["HOSTNAME", "NIC_INFO", "IP_ADDR"] #Primary/Sec Config Data
-      temp = dict()
-      database_driver = ddriver.DbDriver()
-      for data in configdata:
-         temp[data] = sys_config[data]
-   
-      database_driver.insert_db('Primary_Configuration',temp)
-      logger.subsection("sucessfully populated data for primary server")
-      temp = dict()
-      temp['DATA_DIR'] = sys_config['DATA_DIR']
-      temp['DATA_SYNC'] = sys_config['DATA_SYNC']
-      temp['MASK'] = sys_config['MASK']
-      temp['SUBNET'] = sys_config['SUBNET']
-      database_driver.insert_db('General_Configuration',temp)
-      logger.subsection("sucessfully populated data for general configuration")
+   logger.subsection("populating database with primary config data")
+   configdata = ["HOSTNAME", "NIC_INFO", "IP_ADDR"] #Primary/Sec Config Data
+   temp = dict()
+   database_driver = ddriver.DbDriver()
+   for data in configdata:
+       temp[data] = sys_config[data]
 
-      logger.subsection("populating database with secondary config data")
-      sys_config = chaif.secondaryConfigurator()
-      database_driver.insert_db('Secondary_Configuration', sys_config)
-      logger.subsection("sucessfully populated data for secondary server")
-      #We start with the HATCI
-      logger.section("HATCI Setup")
-      logger.section("Heartbeat Configuration")
+   database_driver.insert_db('Primary_Configuration',temp)
+   logger.subsection("sucessfully populated data for primary server")
+   temp = dict()
+   temp['DATA_DIR'] = sys_config['DATA_DIR']
+   temp['DATA_SYNC'] = sys_config['DATA_SYNC']
+   temp['MASK'] = sys_config['MASK']
+   temp['SUBNET'] = sys_config['SUBNET']
+   database_driver.insert_db('General_Configuration',temp)
+   logger.subsection("sucessfully populated data for general configuration")
 
-      if(heartbeat.configure() != 0):
-         logger.subsection("heartbeat config failed prematurely, terminating installation")
-         exit.open("heartbeat configuration failed")
-      logger.subsection("heartbeat configuration completed")
-   	
-      logger.section("Rsync Configuration")
-      if(datasync.configure() != 0):
-         logger.subsection("rsync config failed prematurely")
-         exit.open("rsync failed")
+   logger.subsection("populating database with secondary config data")
+   sys_config = chaif.secondaryConfigurator()
+   database_driver.insert_db('Secondary_Configuration', sys_config)
+   logger.subsection("sucessfully populated data for secondary server")
+   #We start with the HATCI
+   logger.section("HATCI Setup")
+   logger.section("Heartbeat Configuration")
 
-      logger.section("Monit Configuration")
-      if(monit.configure() != 0):
-         logger.subsection("monit config failed prematurely")
-         exit.open("monit failed")
-      logger.subsection("monit configuration completed")
+   if(heartbeat.configure() != 0):
+       logger.subsection("heartbeat config failed prematurely, terminating installation")
+       exit.open("heartbeat configuration failed")
+   logger.subsection("heartbeat configuration completed")
+ 
+   logger.section("Rsync Configuration")
+   if(datasync.configure() != 0):
+       logger.subsection("rsync config failed prematurely")
+       exit.open("rsync failed")
 
-   elif(mode == "secondary"):
-      logger.section("SECONDARY SERVER")
-      
+   logger.section("Monit Configuration")
+   if(monit.configure() != 0):
+       logger.subsection("monit config failed prematurely")
+       exit.open("monit failed")
+   logger.subsection("monit configuration completed")
+
 
    #At this point we have finished our installation
    #We now start all services
@@ -144,8 +131,7 @@ def main():
    logger.subsection("ha-oscar installation complete")
 
 def usage():
-   print "usage: haoscar_configure -m <intended mode>"
-   print "<intended mode: primary|secondary>"
+   print "usage: haoscar_configure"
 
 if __name__ == "__main__":
    main()
