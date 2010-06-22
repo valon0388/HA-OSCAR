@@ -18,6 +18,7 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from os import path
+import subprocess
 import commands
 import halib.chaif.DatabaseDriver as ddriver
 import halib.Logger as logger
@@ -54,4 +55,4 @@ class ReplicationSuite:
 
       logger.subsection("starting cloning process")
       #print commands.getoutput("echo \"I am in `pwd`\"")
-      print commands.getoutput("haoscar-system-clone.sh")
+      subprocess.call("haoscar-system-clone.sh")
