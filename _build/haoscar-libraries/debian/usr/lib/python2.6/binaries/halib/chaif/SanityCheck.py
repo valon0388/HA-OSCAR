@@ -26,7 +26,7 @@ errorsList = []
 
 def initialize():
 	rootCheck()
-	rubyCheck()
+	#rubyCheck()  Ruby is not used by core HA-OSCAR. If it were, it would be a standard dependancy.
 	networkCheck()
 	osCheck()
 	return errorsList
