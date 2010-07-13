@@ -153,7 +153,7 @@ range(0, outbytes, 32)] #TODO: Fix parsing
           self.conf_values['FALLBACK_IPS'] = ''
           if ha_ifaces[1] == ',': #We have specified interfaces.
             while ha_ifaces[1] == ',':
-              ha_ifaces = ha_ifaces[0].partition(',')
+              ha_ifaces = ha_ifaces[2].partition(',')
               ha_ip = socket.inet_ntoa(fcntl.ioctl(
                          s.fileno(),
                          0x8915,
