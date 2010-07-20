@@ -1,5 +1,5 @@
 #!/bin/bash
 dpkg -b debian
-mv debian.deb haoscar-libraries.deb
+mv debian.deb haoscar-lib.deb
 
 

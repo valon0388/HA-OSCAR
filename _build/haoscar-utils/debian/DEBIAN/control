@@ -1,5 +1,5 @@
-Package: HA-OSCAR4
-Version: 1.1-1
+Package: haoscar-util
+Version: 2.1.1
 Section: base
 Priority: optional
 Architecture:all
