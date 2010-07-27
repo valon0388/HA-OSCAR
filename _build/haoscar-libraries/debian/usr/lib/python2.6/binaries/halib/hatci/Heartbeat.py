@@ -72,9 +72,10 @@ def configure():
 	#	line = FILE.readline()
 	#temp = line.split("=")
 
-        ddriver = database_driver.DbDriver() 
+	ddriver = database_driver.DbDriver() 
 	primary_conf = ddriver.select_db('Primary_Configuration')
-	secondary_conf = ddriver.select_db('Secondary_Configuration')	
+	secondary_conf = ddriver.select_db('Secondary_Configuration')
+	general_conf = ddriver.select_db('General_Configuration')	
 	
 	nic_info = ""
 	nic_info = primary_conf[0]["NIC_INFO"]
@@ -99,15 +100,14 @@ def configure():
 	else:
 		logger.subsection("writing haresource configuration")
 
-		ip_addr = primary_conf[0]['IP_ADDR']
-		ha_ip = primary_conf[0]['FALLBACK_IPS']
+		v_ip_addr = general_conf[0]['VIRTUAL_IPS']
 		if(len(ip_addr)):
 			haresource = []
-			haresource.append(commands.getoutput("uname -n") + " " + ip_addr + " " + ha_ip)
+			haresource.append(commands.getoutput("uname -n") + " " + v_ip_addr)
 			FILE = open("/etc/ha.d/haresources","w")
 			FILE.writelines(haresource)
 		else:
-			logger.subsection("a fatal error has occured, could not retrieve ip information")
+			logger.subsection("fatal error: could not retrieve heartbeat ip information")
 			return 1
 
 	#If we have not yet died at this point we can assume the configuration was

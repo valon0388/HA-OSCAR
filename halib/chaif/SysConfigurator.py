@@ -118,9 +118,7 @@ range(0, outbytes, 32)] #TODO: Fix parsing
               temp = temp + i + ", "
           temp = temp.strip(', ') #cleans off tailing comma
           logger.subsection("Detected multiple active interfaces: "+temp)
-          self.str_value = raw_input("Select the local network interface from the options above. If you would like to only migrate specific interfaces on failure, list them after the local interface seperated by commas: ")
-          ha_ifaces = self.str_value.partition(',') #[0] contains local interface. [3] contains rest.
-          self.str_value = ha_ifaces[0].strip()
+          self.str_value = raw_input("Select the local network interface from the options above: ").strip()
           cmd_result = commands.getoutput("ifconfig "+self.str_value)
           if ('error fetching' in cmd_result or self.str_value is ""):
              logger.subsection("invalid device specified, skipping for now")
@@ -150,26 +148,8 @@ range(0, outbytes, 32)] #TODO: Fix parsing
              self.conf_values['SUBNET'] += str(int(masksub[0]) & int(ipsub[0])) + '.' #2nd to last
              self.conf_values['SUBNET'] += str(int(masksub[2]) & int(ipsub[2]))  #Gets the last section
           
-          self.conf_values['FALLBACK_IPS'] = ''
-          if ha_ifaces[1] == ',': #We have specified interfaces.
-            while ha_ifaces[1] == ',':
-              ha_ifaces = ha_ifaces[2].partition(',')
-              ha_ip = socket.inet_ntoa(fcntl.ioctl(
-                         s.fileno(),
-                         0x8915,
-                         struct.pack('256s', ha_ifaces[0].strip()[:15])
-                         )[20:24])
-              self.conf_values['FALLBACK_IPS'] += ha_ip + ' '
-          else: #We should use all availavle interfaces except lo.
-            for interface in self.interface_list:
-              if interface != 'lo' and interface != self.conf_values['NIC_INFO']:
-                ha_ip = socket.inet_ntoa(fcntl.ioctl(
-                         s.fileno(),
-                         0x8915,
-                         struct.pack('256s', interface[:15])
-                         )[20:24])
-                self.conf_values['FALLBACK_IPS'] += ha_ip + ' '
-          self.conf_values['FALLBACK_IPS'] = self.conf_values['FALLBACK_IPS'].strip()
+          self.conf_values['VIRTUAL_IPS'] = ''
+          self.conf_values['VIRTUAL_IPS'] = raw_input("Provide virtual IPs in a space delimited list. There should be one per subnet connected to this server: ").strip() #TODO: add a validity check post Beta.
           
     ########################################################################
     #We finally provide a default list of services to be monitored 'ssh daemon' really

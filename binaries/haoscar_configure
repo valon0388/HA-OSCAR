@@ -76,7 +76,7 @@ def main():
    chaif.databaseSetup()
 
    logger.subsection("populating database with primary config data")
-   configdata = ["HOSTNAME", "NIC_INFO", "IP_ADDR", "FALLBACK_IPS"] #Primary/Sec Config Data
+   configdata = ["HOSTNAME", "NIC_INFO", "IP_ADDR"] #Primary/Sec Config Data
    temp = dict()
    database_driver = ddriver.DbDriver()
    for data in configdata:
@@ -89,6 +89,7 @@ def main():
    temp['DATA_SYNC'] = sys_config['DATA_SYNC']
    temp['MASK'] = sys_config['MASK']
    temp['SUBNET'] = sys_config['SUBNET']
+   temp['VIRTUAL_IPS']= sys_config['VIRTUAL_IPS']
    database_driver.insert_db('General_Configuration',temp)
    logger.subsection("sucessfully populated data for general configuration")
 
@@ -129,7 +130,7 @@ def main():
    commands.getoutput("/etc/init.d/heartbeat restart")
    commands.getoutput("/etc/init.d/monit restart")
 
-   logger.subsection("ha-oscar installation complete")
+   logger.subsection("Primary ha-oscar installation complete. Please netboot Secondary Server.")
 
 def usage():
    print "usage: haoscar_configure"
