@@ -101,7 +101,7 @@ def configure():
 		logger.subsection("writing haresource configuration")
 
 		v_ip_addr = general_conf[0]['VIRTUAL_IPS']
-		if(len(ip_addr)):
+		if(len(v_ip_addr)):
 			haresource = []
 			haresource.append(commands.getoutput("uname -n") + " " + v_ip_addr)
 			FILE = open("/etc/ha.d/haresources","w")
