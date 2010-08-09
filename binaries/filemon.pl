@@ -107,7 +107,7 @@ sub call_rsync {
 	print "RSYNC CALLED\n";
 	foreach my $path (@ARGV){
 		my $mod = basename($path);
-		my $rsync_cmd = "ssh -l $ssh_user $secondary_server rsync -t -r -z --delete rsync://$primary_server/$mod $path";
+		my $rsync_cmd = "rsync -az --delete /$mod/ $secondary_server:$path/";
 		print "Synchronizing $mod\n"; 
 		print "command = $rsync_cmd\n";
 		!system($rsync_cmd) or die "Error in '$rsync_cmd'";
@@ -162,7 +162,7 @@ sub event_handler {
 		case "create" {
 			create_event_handler($event);
 		}
-		# "move" is quivalent to delete + create
+		# "move" is equivalent to delete + create
 	}
 }
 
