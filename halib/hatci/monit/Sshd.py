@@ -17,10 +17,12 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+#TODO: Handle various instances of sshd.
+
 configuration = """
 check process sshd with pidfile /var/run/sshd.pid
-start program  /etc/init.d/sshd start
-stop program  /etc/init.d/sshd stop
+start program = "/etc/init.d/ssh start"
+stop program = "/etc/init.d/ssh stop"
 if 5 restarts within 5 cycles then timeout
 if failed port 22 protocol ssh then restart
 """

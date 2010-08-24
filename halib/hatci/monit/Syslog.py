@@ -19,8 +19,8 @@
 
 configuration = """
 check process syslogd with pidfile /var/run/syslogd.pid
-start program  /etc/init.d/sysklogd start
-stop program  /etc/init.d/sysklogd stop
+start program = "/etc/init.d/rsyslog start"
+stop program = "/etc/init.d/rsyslog stop"
 if 5 restarts within 5 cycles then timeout
 check file syslogd_file with path /var/log/syslog
 if timestamp > 65 minutes then alert
