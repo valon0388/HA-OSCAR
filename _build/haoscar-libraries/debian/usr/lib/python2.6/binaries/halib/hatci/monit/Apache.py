@@ -19,8 +19,8 @@
 
 configuration = """
 check process apache with pidfile /var/run/httpd.pid
-start program = "/etc/init.d/apache start"
-stop program = "/etc/init.d/apache stop"
+start program = "/etc/init.d/apache2 start"
+stop program = "/etc/init.d/apache2 stop"
 if 5 restarts within 5 cycles then timeout
 """
 
