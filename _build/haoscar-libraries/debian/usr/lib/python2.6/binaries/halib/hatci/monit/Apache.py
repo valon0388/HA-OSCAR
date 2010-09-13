@@ -18,7 +18,7 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 configuration = """
-check process apache with pidfile /var/run/httpd.pid
+check process apache with pidfile /var/run/apache2.pid
 start program = "/etc/init.d/apache2 start"
 stop program = "/etc/init.d/apache2 stop"
 if 5 restarts within 5 cycles then timeout

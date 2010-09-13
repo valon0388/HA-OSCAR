@@ -18,7 +18,7 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 configuration = """
-check process syslogd with pidfile /var/run/syslogd.pid
+check process syslogd with pidfile /var/run/rsyslogd.pid
 start program = "/etc/init.d/rsyslog start"
 stop program = "/etc/init.d/rsyslog stop"
 if 5 restarts within 5 cycles then timeout
