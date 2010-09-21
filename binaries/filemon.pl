@@ -166,6 +166,8 @@ sub event_handler {
 	}
 }
 
+`umount -at 'fuse.gvfs-fuse-daemon'`;
+
 foreach my $path (@ARGV) {
 	if ($path !~ m/^\//) {
 		die "$path is not a full path";

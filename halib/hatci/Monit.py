@@ -21,6 +21,7 @@ import sys
 import commands
 import halib.Logger as logger
 import halib.chaif.DatabaseDriver as database_driver
+import halib.hatci.monit.Daemon as daemon
 import halib.hatci.monit.Apache as apache
 import halib.hatci.monit.Sshd as ssh
 import halib.hatci.monit.Syslog as syslog
@@ -41,8 +42,14 @@ def configure():
   FILE.write(init_comment+"\nstartup=1\n")
   FILE.close()
 
-  #TODO: Make this part automatic.
+  #TODO: Make this part smarter.
   #Configure each component for Mon-IT
+  
+  #TODO: Make this chunck configurable
+  logger.subsection("adding default config information")
+  rules.append("\n")
+  rules.append(daemon.configure())
+  
   #Apache Config:
   logger.subsection("adding apache config")
   rules.append("\n")
