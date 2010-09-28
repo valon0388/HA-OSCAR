@@ -1,8 +1,5 @@
 #! /usr/bin/env python
-#
-# Copyright (c) 2010 Okoye Chuka D.<okoye9@gmail.com>        
-#                    All rights reserved.
-#
+
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
 #   the Free Software Foundation; either version 2 of the License, or
@@ -17,17 +14,12 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#TODO: Handle various instances of sshd.
-
 configuration = """
-check process sshd with pidfile /var/run/sshd.pid
-start program = "/etc/init.d/ssh start"
-stop program = "/etc/init.d/ssh stop"
-if 5 restarts within 5 cycles then timeout
-if failed port 22 protocol ssh then restart
-
-check file sshdpid with path /var/run/sshd.pid
-if changed timestamp for 5 cycles then exec "/usr/lib/heartbeat/hb_standby"
+set daemon 120
+set httpd port 2188 and use address localhost
+	allow localhost
+# allow admin:Monit	
 """
+
 def configure():
-   return configuration
+	return configuration

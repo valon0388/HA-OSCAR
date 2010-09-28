@@ -25,6 +25,9 @@ start program = "/etc/init.d/ssh start"
 stop program = "/etc/init.d/ssh stop"
 if 5 restarts within 5 cycles then timeout
 if failed port 22 protocol ssh then restart
+
+check file sshdpid with path /var/run/sshd.pid
+if changed timestamp for 5 cycles then exec "/usr/lib/heartbeat/hb_standby"
 """
 def configure():
    return configuration

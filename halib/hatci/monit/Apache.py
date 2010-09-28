@@ -22,6 +22,9 @@ check process apache with pidfile /var/run/apache2.pid
 start program = "/etc/init.d/apache2 start"
 stop program = "/etc/init.d/apache2 stop"
 if 5 restarts within 5 cycles then timeout
+
+check file apachepid with path /var/run/apache2.pid
+if changed timestamp for 5 cycles then exec "/usr/lib/heartbeat/hb_standby"
 """
 
 def configure():
