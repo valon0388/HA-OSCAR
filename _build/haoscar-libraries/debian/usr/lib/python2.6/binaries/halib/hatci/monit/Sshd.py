@@ -27,7 +27,7 @@ if 5 restarts within 5 cycles then timeout
 if failed port 22 protocol ssh then restart
 
 check file sshdpid with path /var/run/sshd.pid
-if changed timestamp for 5 cycles then exec "/usr/lib/heartbeat/hb_standby"
+if changed timestamp for 5 cycles then exec "/bin/sh /usr/bin/fail-over"
 """
 def configure():
    return configuration

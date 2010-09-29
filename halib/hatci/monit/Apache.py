@@ -24,7 +24,7 @@ stop program = "/etc/init.d/apache2 stop"
 if 5 restarts within 5 cycles then timeout
 
 check file apachepid with path /var/run/apache2.pid
-if changed timestamp for 5 cycles then exec "/usr/lib/heartbeat/hb_standby"
+if changed timestamp for 4 cycles then exec "/bin/sh /usr/bin/fail-over"
 """
 
 def configure():
