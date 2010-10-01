@@ -1,4 +1,9 @@
-#!/usr/sh
-/etc/init.d/monit monitor all
-/etc/init.d/heartbeat start
-
+#!/bin/bash
+if [ whoami = 'root' ]; then
+	SECONDARY=`grep "SECONDARY_IP" /usr/share/haoscar/sysimager.conf | cut -f 2 -d ':'`
+	monit monitor all
+	/etc/init.d/heartbeat start
+	ssh $SECONDARY 'service heartbeat restart'
+else
+	echo "Please run as root."
+fi
