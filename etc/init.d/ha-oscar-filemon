@@ -16,7 +16,7 @@ filemon_start() {
 	log_daemon_msg "Starting ha-oscar-filemon daemon" "ha-oscar-filemon"
 	# TODO Read 'period' information from the configuration
 	# (maybe in the database) 
-	start-stop-daemon --start --pidfile $PID_FILE --background --make-pidfile --exec $DAEMON -- --recursive --period 3600 --primary=$PRIMARY --secondary=$SECONDARY  $watch_dirs
+	start-stop-daemon --start --pidfile $PID_FILE --background --make-pidfile --exec $DAEMON -- --recursive --period 120 --primary=$PRIMARY --secondary=$SECONDARY  $watch_dirs
 	log_end_msg $?
 }
 
