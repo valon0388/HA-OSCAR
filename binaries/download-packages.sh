@@ -5,7 +5,7 @@
 # The real package should handle this for the users...
 
 #Determines the architecture type of the host system
-if [ $HOSTTYPE 	!= "x86_64" ]
+if [ $HOSTTYPE != "x86_64" ]
 then
 	ARCH="i386"
 else
@@ -21,6 +21,11 @@ then
 	./install -v --download-only --tag stable --directory . systemconfigurator \
 	systemimager-client systemimager-common /
 	systemimager-boot-"$ARCH"-standard systemimager-initrd-template-"$ARCH" \
+	systemimager-server
+else
+	echo "RPM based distrobution detected......"
+	./install -v --download-only --tag stable --directory . systemconfigurator \
 	systemimager-client systemimager-common \
 	systemimager-"$ARCH"boot-standard systemimager-"$ARCH"initrd_template \
 	systemimager-server
+fi
