@@ -69,7 +69,7 @@ fi
 
 if [[ ! -d $IMAGE_DIR ]]; then
 	mkdir -p $IMAGE_DIR || 
-	{ echo "Cannot crate directory: $IMAGE_DIR" && exit -1 ; }
+	{ echo "Cannot create directory: $IMAGE_DIR" && exit -1 ; }
 fi
 
 echo "Preparing the golden client ...";
@@ -102,7 +102,13 @@ si_mkbootserver -f --interface=$HA_ETH --localdhcp=y --pxelinux=/usr/lib/syslinu
 # NOTE: The following line is for ubuntu only
 
 echo "Configuring DHCP ...";
-dhcp_conf="/etc/dhcp3/dhcpd.conf";
+# Executes download commands that are slightly different if a redhat distrobution is detected.
+if [ ! -f /etc/redhat-release ]
+then
+	dhcp_conf="/etc/dhcp3/dhcpd.conf";
+else
+	dhcp_conf="/etc/dhcpd.conf";
+fi
 bak $dhcp_conf;
 
 gen-dhcpd-conf.pl --primary-ip $PRIMARY_IP \
@@ -110,8 +116,13 @@ gen-dhcpd-conf.pl --primary-ip $PRIMARY_IP \
 	--netmask $MASK \
 	--subnet $SUBNET > $dhcp_conf
 
-service dhcp3-server restart
-
+# Executes download commands that are slightly different if a redhat distrobution is detected.
+if [ ! -f /etc/redhat-release ]
+then
+	service dhcp3-server restart
+else 
+	/etc/init.d/dhcpd restart
+fi
 
 
 echo "Configuring cluster.xml ...";
@@ -143,11 +154,22 @@ si_clusterconfig -u
 
 
 si_mkclientnetboot --netboot --clients $SECONDARY_HOSTNAME --flavor $IMAGE_NAME
-if service systemimager-server-rsyncd status; then
-	service systemimager-server-rsyncd restart; 
+# Executes download commands that are slightly different if a redhat distrobution is detected.
+if [ ! -f /etc/redhat-release ]
+then
+	if service systemimager-server-rsyncd status; then
+		service systemimager-server-rsyncd restart; 
+	else
+		service systemimager-server-rsyncd start; 
+	fi
 else
-	service systemimager-server-rsyncd start; 
-fi
+	if /etc/init.d/systemimager-server-rsyncd status;
+	then
+		/etc/init.d/systemimager-server-rsyncd restart;
+	else
+		/etc/init.d/systemimager-server-rsyncd start;
+	fi
+fi	
 
 exit 0;
 

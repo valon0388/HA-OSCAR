@@ -1,3 +1,11 @@
 #!/usr/bin/bash
 
-sudo dpkg -r HA-OSCAR1 HA-OSCAR2 HA-OSCAR3 HA-OSCAR4
+# Executes download commands that are slightly different if a redhat distrobution is detected.
+if [ ! -f /etc/redhat-release ]
+then
+	echo "Deb based distrobution detected....."
+	dpkg -r HA-OSCAR1 HA-OSCAR2 HA-OSCAR3 HA-OSCAR4
+else
+	echo "RPM based distrobution detected......"
+	yum 	remove HA-OSCAR1 HA-OSCAR2 HA-OSCAR3 HA-OSCAR4
+fi

@@ -19,15 +19,30 @@
 
 #TODO: Handle various instances of sshd.
 
-configuration = """
-check process sshd with pidfile /var/run/sshd.pid
-start program = "/etc/init.d/ssh start"
-stop program = "/etc/init.d/ssh stop"
-if 5 restarts within 5 cycles then timeout
-if failed port 22 protocol ssh then restart
+import os
 
-check file sshdpid with path /var/run/sshd.pid
-if changed timestamp for 5 cycles then exec "/bin/sh /usr/bin/fail-over"
-"""
+if os.path.isfile("/etc/redhat-release"):
+	configuration = """
+	check process sshd with pidfile /var/run/sshd.pid
+	start program = "/etc/init.d/sshd start"
+	stop program = "/etc/init.d/sshd stop"
+	if 5 restarts within 5 cycles then timeout
+	if failed port 22 protocol ssh then restart
+	
+	check file sshdpid with path /var/run/sshd.pid
+	if changed timestamp for 5 cycles then exec "/bin/sh /usr/bin/fail-over"
+	"""
+else:
+	configuration = """
+	check process sshd with pidfile /var/run/sshd.pid
+	start program = "/etc/init.d/ssh start"
+	stop program = "/etc/init.d/ssh stop"
+	if 5 restarts within 5 cycles then timeout
+	if failed port 22 protocol ssh then restart
+	
+	check file sshdpid with path /var/run/sshd.pid
+	if changed timestamp for 5 cycles then exec "/bin/sh /usr/bin/fail-over"
+	"""
+
 def configure():
    return configuration

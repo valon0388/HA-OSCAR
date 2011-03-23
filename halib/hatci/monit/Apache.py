@@ -17,15 +17,28 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-configuration = """
-check process apache with pidfile /var/run/apache2.pid
-start program = "/etc/init.d/apache2 start"
-stop program = "/etc/init.d/apache2 stop"
-if 5 restarts within 5 cycles then timeout
+import os
 
-check file apachepid with path /var/run/apache2.pid
-if changed timestamp for 4 cycles then exec "/bin/sh /usr/bin/fail-over"
-"""
+if os.path.isfile("/etc/redhat-release"):
+	configuration = """
+	check process apache with pidfile /var/run/apache2.pid
+	start program = "/etc/init.d/httpd start"
+	stop program = "/etc/init.d/httpd stop"
+	if 5 restarts within 5 cycles then timeout
+
+	check file apachepid with path /var/run/httpd.pid
+	if changed timestamp for 4 cycles then exec "/bin/sh /usr/bin/fail-over"
+	"""
+else:
+	configuration = """
+	check process apache with pidfile /var/run/apache2.pid
+	start program = "/etc/init.d/apache2 start"
+	stop program = "/etc/init.d/apache2 stop"
+	if 5 restarts within 5 cycles then timeout
+
+	check file apachepid with path /var/run/apache2.pid
+	if changed timestamp for 4 cycles then exec "/bin/sh /usr/bin/fail-over"
+	"""
 
 def configure():
    return configuration

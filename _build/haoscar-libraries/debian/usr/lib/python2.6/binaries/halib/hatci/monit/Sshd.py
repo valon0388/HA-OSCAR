@@ -21,8 +21,8 @@
 
 configuration = """
 check process sshd with pidfile /var/run/sshd.pid
-start program = "/etc/init.d/ssh start"
-stop program = "/etc/init.d/ssh stop"
+start program = "/etc/init.d/sshd start"
+stop program = "/etc/init.d/sshd stop"
 if 5 restarts within 5 cycles then timeout
 if failed port 22 protocol ssh then restart
 
