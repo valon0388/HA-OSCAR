@@ -15,8 +15,8 @@ then
 
 	ln -s /usr/bin/atftp /usr/bin/tftp
 	dpkg -i systemconfigurator_*.deb
-	dpkg -i systemimager-common_*.deb systemimager-boot-i386-standard_*.deb systemimager-server_*.deb
-	dpkg -i systemimager-initrd-template-i386* systemimager-client_*
+	dpkg -i systemimager-common_*.deb systemimager-boot-"$ARCH"-standard_*.deb systemimager-server_*.deb
+	dpkg -i systemimager-initrd-template-"$ARCH"* systemimager-client_*
 	
 else
 	echo "RPM based distrobution detected....."

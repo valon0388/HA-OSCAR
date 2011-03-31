@@ -1,0 +1,52 @@
+#!/bin/bash
+
+if [ whoami != root ]
+then 
+	echo "Please run this program in root mode."
+	exit 1
+fi
+
+#Determines the architecture type of the host system
+if [ $HOSTTYPE != "x86_64" ]
+then
+	ARCH="i386"
+else
+	ARCH="x86_64"
+fi
+
+echo "$ARCH Distrobution detected....."
+
+if [ -f /etc/redhat-release ] 
+then 
+
+	echo "Enabling RPMforge $ARCH repository......"
+
+	if [ $ARCH -eq "i386" ]
+	then
+		wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.3.6-1.el5.rf.i386.rpm
+		rpm -Uvh rpmforge-release-0.3.6-1.el5.rf.i386.rpm
+		rm -f rpmforge-release-0.3.6-1.el5.rf.i386.rpm
+	else
+		wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.3.6-1.el5.rf.x86_64.rpm
+		rpm -Uvh rpmforge-release-0.3.6-1.el5.rf.x86_64.rpm
+		rm -f rpmforge-release-0.3.6-1.el5.rf.x86_64.rpm
+	fi
+	
+	# libsys-gamin-perl or Sys::Gamin must be installed from source which can
+	# be found here http://search.cpan.org/src/GARNACHO/Sys-Gamin-0.1/lib/Sys/Gamin.pm
+	yum -y install monit heartbeat sqlite coreutils openssh-server
+
+	cp -r haoscar-binaries/debian/etc /
+	cp -r haoscar-binaries/debian/usr /
+
+	cp -r haoscar-devel/debian/usr /
+
+	cp -r haoscar-libraries/debian/usr /
+
+	cp -r haoscar-utils/debian/usr /
+else
+	dpkg -i *.deb
+	apt-get intall -f
+fi
+
+exit 0
