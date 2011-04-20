@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ whoami != root ]
+if [ $(whoami) != "root" ]
 then 
 	echo "Please run this program in root mode."
 	exit 1
@@ -36,14 +36,17 @@ then
 	# be found here http://search.cpan.org/src/GARNACHO/Sys-Gamin-0.1/lib/Sys/Gamin.pm
 	yum -y install monit heartbeat sqlite coreutils openssh-server
 
-	cp -r haoscar-binaries/debian/etc /
-	cp -r haoscar-binaries/debian/usr /
+	cp -rH haoscar-binaries/debian/etc/init.d/ha-oscar-filemon /etc/init.d/
+	cp -rH haoscar-binaries/debian/etc/rc3.d/S99ha-oscar-filemon /etc/rc3.d/
 
-	cp -r haoscar-devel/debian/usr /
+	cp -rH haoscar-binaries/debian/etc/rc5.d/S99ha-oscar-filemon /etc/rc5.d/
+	cp -rH haoscar-binaries/debian/usr /
 
-	cp -r haoscar-libraries/debian/usr /
+	cp -rH haoscar-devel/debian/usr /
 
-	cp -r haoscar-utils/debian/usr /
+	cp -rH haoscar-libraries/debian/usr /
+
+	cp -rH haoscar-utils/debian/usr /
 else
 	dpkg -i *.deb
 	apt-get intall -f
