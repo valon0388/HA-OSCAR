@@ -18,6 +18,9 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #TODO: Handle various instances of sshd.
+
+import os
+
 if os.path.isfile("/etc/redhat-release"):
 	configuration = """
 	check process sshd with pidfile /var/run/sshd.pid

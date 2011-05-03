@@ -27,6 +27,7 @@ import halib.hatci.monit.Sshd as ssh
 import halib.hatci.monit.Syslog as syslog
 from os import path
 from os import system
+import os
 import halib.Exit as exit
 
 init_comment = """\n#HA-OSCAR auto generated Mon-it configuration"""
@@ -65,8 +66,14 @@ def configure():
   rules.append("\n")
   rules.append(syslog.configure())
 
+  print rules
+	
   #TODO: Back up previous version of monitrc
   #We can now write out to config file
+  if not os.path.isfile("/etc/monit/monitrc"):
+	if not os.path.isdir("/etc/monit/monitrc"):
+		os.mkdir("/etc/monit")	
+		  
   FILE = open("/etc/monit/monitrc", "w")
   try:
     for line in rules:

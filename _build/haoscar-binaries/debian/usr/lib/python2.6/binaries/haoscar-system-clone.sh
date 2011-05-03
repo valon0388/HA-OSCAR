@@ -73,8 +73,14 @@ if [[ ! -d $IMAGE_DIR ]]; then
 fi
 
 echo "Preparing the golden client ...";
-
-si_prepareclient --server $PRIMARY_IP --quiet || { echo "Error in si_prepareclient" && exit -1; }
+if [ ! -f /etc/redhat-release ]
+then
+	echo "Using si_prepareclient."
+	si_prepareclient --server $PRIMARY_IP --quiet || { echo "Error in si_prepareclient" && exit -1; }
+else
+	echo "Using /usr/sbin/si_prepareclient."
+	/usr/sbin/si_prepareclient --server $PRIMARY_IP --quiet || { echo "Error in /usr/sbin/si_prepareclient" && exit -1; }
+fi
 
 export EXCLUDED_FILES_FILE=/usr/share/haoscar/excludedfiles
 
@@ -83,19 +89,46 @@ if ! grep "$IMAGE_DIR" $EXCLUDED_FILES_FILE >/dev/null 2>&1; then
 fi
 
 echo "Getting the image";
-si_getimage --golden-client $PRIMARY_IP --image $IMAGE_NAME --post-install reboot --exclude-file $EXCLUDED_FILES_FILE --directory $IMAGE_DIR --ip-assignment static --quiet || { echo "Error in si_getimage" && exit -1; }
+if [ ! -f /etc/redhat-release ]
+then
+	echo "Using si_getimage."
+	si_getimage --golden-client $PRIMARY_IP --image $IMAGE_NAME --post-install reboot --exclude-file $EXCLUDED_FILES_FILE --directory $IMAGE_DIR --ip-assignment static --quiet || { echo "Error in si_getimage" && exit -1; }
+else
+	echo "Using /usr/sbin/si_getimage."
+	/usr/sbin/si_getimage --golden-client $PRIMARY_IP --image $IMAGE_NAME --post-install reboot --exclude-file $EXCLUDED_FILES_FILE --directory $IMAGE_DIR --ip-assignment static --quiet || { echo "Error in /usr/sbin/si_getimage" && exit -1; }
+fi
 
 # Now, we have to alter the system configuration of the image
 echo "Configuring the image ...";
-chroot $IMAGE_DIR/$IMAGE_NAME config-image.sh
+if [ ! -f /etc/redhat-release ]
+then
+	echo "Using chroot."
+	chroot $IMAGE_DIR/$IMAGE_NAME config-image.sh
+else
+	echo "Using /usr/sbin/chroot." 
+	/usr/sbin/chroot $IMAGE_DIR/$IMAGE_NAME config-image.sh
+fi
 
 # NOTE: If ufw is active, we have to add a rule to allow rsync port
 echo "Start the systemimager-server-rsyncd service"
-service systemimager-server-rsyncd start
+if [ ! -f /etc/redhat-release ]
+then
+	echo "Using service to start."
+	service systemimager-server-rsyncd start
+else
+	echo "Using /sbin/service to start."
+	/sbin/service systemimager-server-rsyncd start
+fi
 
 echo "Make bootserver";
-si_mkbootserver -f --interface=$HA_ETH --localdhcp=y --pxelinux=/usr/lib/syslinux/pxelinux.0
-
+if [ ! -f /etc/redhat-release ]
+then 
+	echo "Using si_mkbootserver."
+	si_mkbootserver -f --interface=$HA_ETH --localdhcp=y --pxelinux=/usr/lib/syslinux/pxelinux.0
+else
+	echo "Using /usr/sbin/si_mkbootserver."
+	/usr/sbin/si_mkbootserver -f --interface=$HA_ETH --localdhcp=y --pxelinux=/usr/lib/syslinux/pxelinux.0
+fi
 # Hey, you may have to manually edit the dhcp configuration file
 # instead of using the interactive si_mkdhcpserver
 # Then, don't forget to restart the dhcp server
@@ -152,9 +185,14 @@ si_clusterconfig -u
 # for this to work
 #
 
+if [ ! -f /etc/redhat-release ]
+then
+	si_mkclientnetboot --netboot --clients $SECONDARY_HOSTNAME --flavor $IMAGE_NAME
+	# Executes download commands that are slightly different if a redhat distrobution is detected.
+else
+	/usr/sbin/si_mkclientnetboot --netboot --client $SECONDARY_HOSTNAME --flavor $IMAGE_NAME
+fi
 
-si_mkclientnetboot --netboot --clients $SECONDARY_HOSTNAME --flavor $IMAGE_NAME
-# Executes download commands that are slightly different if a redhat distrobution is detected.
 if [ ! -f /etc/redhat-release ]
 then
 	if service systemimager-server-rsyncd status; then

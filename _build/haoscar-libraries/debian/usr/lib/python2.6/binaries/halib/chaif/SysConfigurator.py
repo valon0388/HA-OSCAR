@@ -31,7 +31,7 @@ import halib.chaif.DatabaseDriver as ddriver
 #     It gets information about network interface, hdd partitioning and other
 #     things needed.
 class SysConfigurator:
-    
+
     def __init__(self):
         self.str_value = ""
         self.conf_values = dict()
@@ -42,7 +42,7 @@ class SysConfigurator:
    
     #Appropriate method to call when trying to gather configuration data 
     def priConfig(self):
-        self.dataConfig()
+	self.dataConfig()
         self.netConfig()
         self.serviceConfig()
         self.hostnameConfig()
@@ -119,7 +119,10 @@ range(0, outbytes, 32)] #TODO: Fix parsing
           temp = temp.strip(', ') #cleans off tailing comma
           logger.subsection("Detected multiple active interfaces: "+temp)
           self.str_value = raw_input("Select the local network interface from the options above: ").strip()
-          cmd_result = commands.getoutput("ifconfig "+self.str_value)
+          if ( not os.path.isfile("/etc/redhat-release")):
+	 	 cmd_result = commands.getoutput("ifconfig "+self.str_value)
+	  else:
+		cmd_result = commands.getoutput("/sbin/ifconfig "+self.str_value)
           if ('error fetching' in cmd_result or self.str_value is ""):
              logger.subsection("invalid device specified, skipping for now")
              self.conf_values['NIC_INFO'] = ""
@@ -175,5 +178,3 @@ range(0, outbytes, 32)] #TODO: Fix parsing
        #######################################################################
     def hostnameConfig(self):
       self.conf_values['HOSTNAME'] =commands.getoutput("uname -n")
-       
-
