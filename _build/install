@@ -21,7 +21,7 @@ then
 
 	echo "Enabling RPMforge $ARCH repository......"
 
-	if [ $ARCH -eq "i386" ]
+	if [ $ARCH = "i386" ]
 	then
 		wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.3.6-1.el5.rf.i386.rpm
 		rpm -Uvh rpmforge-release-0.3.6-1.el5.rf.i386.rpm
