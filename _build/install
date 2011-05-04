@@ -34,7 +34,7 @@ then
 	
 	# libsys-gamin-perl or Sys::Gamin must be installed from source which can
 	# be found here http://search.cpan.org/src/GARNACHO/Sys-Gamin-0.1/lib/Sys/Gamin.pm
-	yum -y install monit heartbeat sqlite coreutils openssh-server
+	yum -y install monit heartbeat sqlite coreutils openssh-server tftp-server
 
 	cp -rH haoscar-binaries/debian/etc/init.d/ha-oscar-filemon /etc/init.d/
 	cp -rH haoscar-binaries/debian/etc/rc3.d/S99ha-oscar-filemon /etc/rc3.d/
