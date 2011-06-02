@@ -142,6 +142,7 @@ range(0, outbytes, 32)] #TODO: Fix parsing
              maskline = commands.getoutput("echo \""+cmd_result+"\" | grep Mask:")
              self.conf_values['MASK'] = maskline.partition('Mask:')[2] #retrieves the proper netmask
              masksub = self.conf_values['MASK'].partition('.')
+	     print masksub
              ipsub = self.conf_values['IP_ADDR'].partition('.')
              self.conf_values['SUBNET'] = ''
              for i in range(2):

@@ -49,7 +49,7 @@ then
 	cp -rH haoscar-utils/debian/usr /
 else
 	dpkg -i *.deb
-	apt-get intall -f
+	apt-get install -f
 fi
 
 exit 0

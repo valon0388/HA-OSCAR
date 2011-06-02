@@ -19,7 +19,7 @@ if [ ! -f /etc/redhat-release ]
 then
 	echo "Deb based distrobution detected....."
 	./install -v --download-only --tag stable --directory . systemconfigurator \
-	systemimager-client systemimager-common /
+	systemimager-client systemimager-common \
 	systemimager-boot-"$ARCH"-standard systemimager-initrd-template-"$ARCH" \
 	systemimager-server
 else
